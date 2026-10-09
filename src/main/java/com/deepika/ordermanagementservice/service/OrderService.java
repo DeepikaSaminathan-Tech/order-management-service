@@ -9,6 +9,8 @@ import com.deepika.ordermanagementservice.entity.OrderStatus;
 import com.deepika.ordermanagementservice.exception.OrderNotFoundException;
 import com.deepika.ordermanagementservice.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -81,6 +83,7 @@ public class OrderService {
                 .toList();
     }
 
+    @Cacheable(value="orders", key="#id")
     public OrderResponse getOrderById(Long id) {
 
         Order order = orderRepository.findById(id)
@@ -108,6 +111,7 @@ public class OrderService {
     }
 
     @Transactional
+    @CacheEvict(value="orders", key="#id")
     public OrderResponse updateOrder(Long id, OrderUpdateRequest request) {
 
         Order order = orderRepository.findById(id)
@@ -125,6 +129,7 @@ public class OrderService {
         return toResponse(order);
     }
 
+    @CacheEvict(value="orders", key="#id")
     public void deleteOrder(Long id) {
 
         Order order = orderRepository.findById(id)
