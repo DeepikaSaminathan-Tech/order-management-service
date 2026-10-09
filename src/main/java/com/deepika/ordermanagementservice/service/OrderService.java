@@ -93,10 +93,9 @@ public class OrderService {
         return toResponse(order);
     }
 
-    public List<OrderResponse> getOrderByStatus(String status) {
-        return orderRepository.findAll()
+    public List<OrderResponse> getOrderByStatus(OrderStatus status) {
+        return orderRepository.findByStatus(status)
                 .stream()
-                .filter(order -> order.getStatus().name().equals(status))
                 .map(this::toResponse)
                 .toList();
     }
