@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 public record OrderResponse(
         Long id,
-        Long version,
         String customerName,
         String productName,
         Integer quantity,

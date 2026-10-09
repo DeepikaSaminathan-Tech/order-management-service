@@ -98,10 +98,10 @@ public class OrderService {
                 .toList();
     }
 
-    public Page<OrderResponse> getOrderByPage(OrderSearchRequest orderPageRequest) {
-        Pageable pageable = PageRequest.of(orderPageRequest.getPage(), orderPageRequest.getSize(),
-                Sort.by(Sort.Direction.fromString(orderPageRequest.getSortDirection()),
-                        orderPageRequest.getSortBy()));
+    public Page<OrderResponse> getOrderByPage(OrderSearchRequest orderSearchRequest) {
+        Pageable pageable = PageRequest.of(orderSearchRequest.getPage(), orderSearchRequest.getSize(),
+                Sort.by(Sort.Direction.fromString(orderSearchRequest.getSortDirection()),
+                        orderSearchRequest.getSortBy()));
 
         return orderRepository.findAll(pageable)
                 .map(this::toResponse);
@@ -137,7 +137,6 @@ public class OrderService {
 
         return new OrderResponse(
                 order.getId(),
-                order.getVersion(),
                 order.getCustomerName(),
                 order.getProductName(),
                 order.getQuantity(),

@@ -21,7 +21,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse methodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getFieldErrors()
                 .stream()
                 .map(FieldError::getField)
@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
     //Concurrent request can update same order result in OptimisticLockingException using @Version
     @ExceptionHandler(OptimisticLockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse optimisticLockException(OptimisticLockException exception) {
+    public ErrorResponse handleOptimisticLockException(OptimisticLockException exception) {
         return new ErrorResponse(409, exception.getMessage());
     }
 

@@ -31,9 +31,9 @@ public class OrderController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<OrderResponse>> getOrderByPage(
-            @Valid OrderSearchRequest orderPageRequest
+            @Valid OrderSearchRequest orderSearchRequest
     ) {
-        return ResponseEntity.ok(orderService.getOrderByPage(orderPageRequest));
+        return ResponseEntity.ok(orderService.getOrderByPage(orderSearchRequest));
     }
 
     @GetMapping("/{id}")

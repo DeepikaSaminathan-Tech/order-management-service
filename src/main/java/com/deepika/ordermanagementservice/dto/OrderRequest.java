@@ -20,8 +20,7 @@ public record OrderRequest(
 
         @NotNull
         @DecimalMin("0.01")
-        BigDecimal price,
+        BigDecimal price
 
-        Long version
 ) {
 }
