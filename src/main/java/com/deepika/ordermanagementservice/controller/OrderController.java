@@ -4,6 +4,7 @@ import com.deepika.ordermanagementservice.dto.OrderSearchRequest;
 import com.deepika.ordermanagementservice.dto.OrderRequest;
 import com.deepika.ordermanagementservice.dto.OrderResponse;
 import com.deepika.ordermanagementservice.dto.OrderUpdateRequest;
+import com.deepika.ordermanagementservice.entity.OrderStatus;
 import com.deepika.ordermanagementservice.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -31,9 +32,9 @@ public class OrderController {
 
     @GetMapping("/page")
     public ResponseEntity<Page<OrderResponse>> getOrderByPage(
-            @Valid OrderSearchRequest orderPageRequest
+            @Valid OrderSearchRequest orderSearchRequest
     ) {
-        return ResponseEntity.ok(orderService.getOrderByPage(orderPageRequest));
+        return ResponseEntity.ok(orderService.getOrderByPage(orderSearchRequest));
     }
 
     @GetMapping("/{id}")
@@ -42,7 +43,7 @@ public class OrderController {
     }
 
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<OrderResponse>> getOrderByStatus(@PathVariable String status) {
+    public ResponseEntity<List<OrderResponse>> getOrderByStatus(@PathVariable OrderStatus status) {
         return ResponseEntity.ok(orderService.getOrderByStatus(status));
     }
 

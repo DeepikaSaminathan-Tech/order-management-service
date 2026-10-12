@@ -9,7 +9,10 @@ import com.deepika.ordermanagementservice.entity.OrderStatus;
 import com.deepika.ordermanagementservice.exception.OrderNotFoundException;
 import com.deepika.ordermanagementservice.repository.OrderRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,8 +84,10 @@ public class OrderService {
                 .toList();
     }
 
+    @Cacheable(value="orders", key="#id")
     public OrderResponse getOrderById(Long id) {
 
+        System.out.println(">>> Fetching order from DATABASE: " + id);
         Order order = orderRepository.findById(id)
                 .orElseThrow(() ->
                         new OrderNotFoundException(id));
@@ -90,28 +95,33 @@ public class OrderService {
         return toResponse(order);
     }
 
-    public List<OrderResponse> getOrderByStatus(String status) {
-        return orderRepository.findAll()
+    public List<OrderResponse> getOrderByStatus(OrderStatus status) {
+        return orderRepository.findByStatus(status)
                 .stream()
-                .filter(order -> order.getStatus().name().equals(status))
                 .map(this::toResponse)
                 .toList();
     }
 
-    public Page<OrderResponse> getOrderByPage(OrderSearchRequest orderPageRequest) {
-        Pageable pageable = PageRequest.of(orderPageRequest.getPage(), orderPageRequest.getSize(),
-                Sort.by(Sort.Direction.fromString(orderPageRequest.getSortDirection()),
-                        orderPageRequest.getSortBy()));
+    public Page<OrderResponse> getOrderByPage(OrderSearchRequest orderSearchRequest) {
+        Pageable pageable = PageRequest.of(orderSearchRequest.getPage(), orderSearchRequest.getSize(),
+                Sort.by(Sort.Direction.fromString(orderSearchRequest.getSortDirection()),
+                        orderSearchRequest.getSortBy()));
 
         return orderRepository.findAll(pageable)
                 .map(this::toResponse);
     }
 
     @Transactional
+    @CacheEvict(value="orders", key="#id")
     public OrderResponse updateOrder(Long id, OrderUpdateRequest request) {
 
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
+
+        if (!order.getVersion().equals(request.version())) {
+            throw new OptimisticLockingFailureException(
+                    "Order was updated by another request. Please fetch the latest order and retry.");
+        }
 
         order.setCustomerName(request.customerName());
         order.setProductName(request.productName());
@@ -125,6 +135,7 @@ public class OrderService {
         return toResponse(order);
     }
 
+    @CacheEvict(value="orders", key="#id")
     public void deleteOrder(Long id) {
 
         Order order = orderRepository.findById(id)
@@ -137,12 +148,12 @@ public class OrderService {
 
         return new OrderResponse(
                 order.getId(),
-                order.getVersion(),
                 order.getCustomerName(),
                 order.getProductName(),
                 order.getQuantity(),
                 order.getPrice(),
-                order.getStatus()
+                order.getStatus(),
+                order.getVersion()
         );
     }
 
