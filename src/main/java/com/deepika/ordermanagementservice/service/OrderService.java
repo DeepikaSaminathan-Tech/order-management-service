@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -86,6 +87,7 @@ public class OrderService {
     @Cacheable(value="orders", key="#id")
     public OrderResponse getOrderById(Long id) {
 
+        System.out.println(">>> Fetching order from DATABASE: " + id);
         Order order = orderRepository.findById(id)
                 .orElseThrow(() ->
                         new OrderNotFoundException(id));
@@ -116,6 +118,11 @@ public class OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException(id));
 
+        if (!order.getVersion().equals(request.version())) {
+            throw new OptimisticLockingFailureException(
+                    "Order was updated by another request. Please fetch the latest order and retry.");
+        }
+
         order.setCustomerName(request.customerName());
         order.setProductName(request.productName());
         order.setQuantity(request.quantity());
@@ -145,7 +152,8 @@ public class OrderService {
                 order.getProductName(),
                 order.getQuantity(),
                 order.getPrice(),
-                order.getStatus()
+                order.getStatus(),
+                order.getVersion()
         );
     }
 

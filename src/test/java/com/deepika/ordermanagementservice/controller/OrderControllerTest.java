@@ -60,7 +60,7 @@ class OrderControllerTest {
 
         OrderResponse response = new OrderResponse(
                 1L, "xx", "xx", 1,
-                new BigDecimal("50000"), OrderStatus.CREATED
+                new BigDecimal("50000"), OrderStatus.CREATED,1L
         );
 
         when(orderService.createOrder(any(OrderRequest.class), eq("key-123")))
@@ -81,7 +81,7 @@ class OrderControllerTest {
     void shouldGetOrderById() throws Exception {
         OrderResponse response = new OrderResponse(
                 1L, "xx", "xx", 1,
-                new BigDecimal("50000"), OrderStatus.CREATED
+                new BigDecimal("50000"), OrderStatus.CREATED, 1L
         );
 
         when(orderService.getOrderById(1L)).thenReturn(response);
@@ -97,7 +97,7 @@ class OrderControllerTest {
     void shouldGetAllOrders() throws Exception {
         OrderResponse response = new OrderResponse(
                 1L, "xx", "xx", 1,
-                new BigDecimal("50000"), OrderStatus.CREATED
+                new BigDecimal("50000"), OrderStatus.CREATED, 1L
         );
 
         when(orderService.getAllOrders()).thenReturn(List.of(response));
@@ -145,7 +145,8 @@ class OrderControllerTest {
                 "xx",
                 "xx",
                 2,
-                new BigDecimal("60000")
+                new BigDecimal("60000"),
+                1L
         );
 
         OrderResponse response = new OrderResponse(
@@ -154,7 +155,8 @@ class OrderControllerTest {
                 "xx",
                 2,
                 new BigDecimal("60000"),
-                OrderStatus.CREATED
+                OrderStatus.CREATED,
+                1L
         );
 
         when(orderService.updateOrder(eq(1L), any(OrderUpdateRequest.class)))
@@ -174,7 +176,7 @@ class OrderControllerTest {
     void shouldReturnPaginatedOrders() throws Exception {
         OrderResponse response = new OrderResponse(
                 1L, "xx", "xx", 1,
-                new BigDecimal("50000"), OrderStatus.CREATED
+                new BigDecimal("50000"), OrderStatus.CREATED, 1L
         );
 
         Page<OrderResponse> page = new PageImpl<>(
@@ -201,7 +203,7 @@ class OrderControllerTest {
     void shouldGetOrdersByStatus() throws Exception {
         OrderResponse response = new OrderResponse(
                 1L, "xx", "xx", 1,
-                new BigDecimal("50000"), OrderStatus.CREATED
+                new BigDecimal("50000"), OrderStatus.CREATED, 1L
         );
 
         when(orderService.getOrderByStatus(OrderStatus.CREATED))
@@ -227,7 +229,7 @@ class OrderControllerTest {
     @DisplayName("Should reject update with blank customer name")
     void shouldRejectInvalidUpdate() throws Exception {
         OrderUpdateRequest request = new OrderUpdateRequest(
-                " ", "xx", 1, new BigDecimal("50000")
+                " ", "xx", 1, new BigDecimal("50000"), 1L
         );
 
         mockMvc.perform(put("/api/orders/1")

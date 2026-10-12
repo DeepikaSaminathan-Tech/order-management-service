@@ -44,7 +44,8 @@ class OrderUpdateRequestTest {
                 " ",
                 "xx",
                 1,
-                new BigDecimal("100")
+                new BigDecimal("100"),
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -59,7 +60,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "",
                 1,
-                new BigDecimal("100")
+                new BigDecimal("100"),
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -74,7 +76,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "xx",
                 null,
-                new BigDecimal("100")
+                new BigDecimal("100"),
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -89,7 +92,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "xx",
                 0,
-                new BigDecimal("100")
+                new BigDecimal("100"),
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -104,7 +108,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "xx",
                 1,
-                null
+                null,
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -119,7 +124,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "xx",
                 1,
-                BigDecimal.ZERO
+                BigDecimal.ZERO,
+                1L
         );
 
         assertTrue(validator.validate(request).stream()
@@ -134,7 +140,8 @@ class OrderUpdateRequestTest {
                 "xx",
                 "xx",
                 1,
-                new BigDecimal("100")
+                new BigDecimal("100"),
+                1L
         );
 
         assertTrue(validator.validate(request).isEmpty());

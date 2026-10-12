@@ -26,7 +26,8 @@ class OrderResponseTest {
                 "xx",
                 2,
                 new BigDecimal("50000"),
-                OrderStatus.CREATED
+                OrderStatus.CREATED,
+                1L
         );
 
         assertEquals(1L, response.id());

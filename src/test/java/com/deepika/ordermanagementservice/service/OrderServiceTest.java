@@ -162,7 +162,7 @@ class OrderServiceTest {
         Order order = buildOrder(1L, "key-123");
 
         OrderUpdateRequest request = new OrderUpdateRequest(
-                "xx", "xx", 2, new BigDecimal("60000")
+                "xx", "xx", 2, new BigDecimal("60000"), 0L
         );
 
         when(orderRepository.findById(1L))
@@ -181,7 +181,7 @@ class OrderServiceTest {
     @DisplayName("Should throw exception when updating a missing order")
     void shouldThrowExceptionWhenUpdatingMissingOrder() {
         OrderUpdateRequest request = new OrderUpdateRequest(
-                "xx", "xx", 2, new BigDecimal("60000")
+                "xx", "xx", 2, new BigDecimal("60000"), 1L
         );
 
         when(orderRepository.findById(99L))
@@ -317,6 +317,7 @@ class OrderServiceTest {
                 .price(new BigDecimal("50000"))
                 .status(OrderStatus.CREATED)
                 .idempotencyKey(idempotencyKey)
+                .version(0L)
                 .build();
     }
 }

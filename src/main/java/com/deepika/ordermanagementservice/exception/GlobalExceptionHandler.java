@@ -2,6 +2,7 @@ package com.deepika.ordermanagementservice.exception;
 
 import com.deepika.ordermanagementservice.dto.ErrorResponse;
 import jakarta.persistence.OptimisticLockException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(OptimisticLockException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleOptimisticLockException(OptimisticLockException exception) {
+        return new ErrorResponse(409, exception.getMessage());
+    }
+
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleOptimisticLockingFailureException(
+            OptimisticLockingFailureException exception) {
         return new ErrorResponse(409, exception.getMessage());
     }
 

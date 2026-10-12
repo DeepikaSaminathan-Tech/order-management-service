@@ -10,6 +10,7 @@ public record OrderResponse(
         String productName,
         Integer quantity,
         BigDecimal price,
-        OrderStatus status
+        OrderStatus status,
+        Long version
 ) {
 }
